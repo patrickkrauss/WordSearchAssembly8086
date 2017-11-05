@@ -22,6 +22,8 @@ data segment
     msgDigitePalavra db "Digite a palavra a ser procurada:",13,10,"$"
     quebraLinha DB 13,10,"$"  
     palavraAtual DB "palavra de teste"
+    caractereEncontrado DB ?
+    posicaoAtualDaBusca DW ?
 ends
 
 stack segment
@@ -45,20 +47,63 @@ start:
     
     
     percorreCacaPalavras:
-        mov bx,di
-        mov dl, [si+bx]
-        mov ah, 2
-        int 21h
+        jmp procuraPalavraHorizontalDireita
+        ;mov bx,di
+        ;mov dl, [si+bx]
+        ;mov ah, 2
+        ;int 21h
         call vaiParaProximaLetra
-    call percorreCacaPalavras
+    jmp percorreCacaPalavras
     
        
     mov ax, 4c00h ; exit to operating system.
-    int 21h     
+    int 21h                                                                                         
     fimPrograma:
     jmp fimPrograma
     
-    ;---------------Rotulos:  
+    ;---------------Rotulos:                                                                                                                     '
+    
+    procuraPalavraHorizontalDireita:
+        lea bx,CACA_PALAVRAS
+        add bx,di
+        add bx,si      
+        mov ax,[bx]
+        inc ax
+        loopProcuraPalavraHorizontalDireita:
+            ;mov bx,ax
+            ;mov [posicaoAtualDaBusca],ax
+                 
+            mov bx,ax
+            lea dx, bx
+            mov ah, 9
+            int 21h  
+           
+            inc ax
+            mov [posicaoAtualDaBusca],ax
+        
+        
+        jmp loopProcuraPalavraHorizontalDireita:     
+    
+    fimProcuraPalavraHorizontalDireita:
+    
+    ret
+    
+    
+    comparaPalavra: 
+        lea ax,palavraAtual   
+        
+    
+    
+    
+    ret  
+    
+    buscaCaractereDireita:
+            
+    
+    
+    
+    ret
+    
     
     ;-----------------------------------------------Pula para proxima letra
     vaiParaProximaLetra:
