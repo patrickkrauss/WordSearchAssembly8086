@@ -336,15 +336,16 @@ buscaPalavraDiagonalInfEsqParaSupDir:
 buscaPalavraVerticalOposto:
     ;reseta registradores usados
         mov cx, 0; indice da coluna da 'palavraAtual'
-        mov dx, 0; indice da coluna do 'CACA_PALAVRAS' reset
+        mov dx, 59; indice da coluna do 'CACA_PALAVRAS' reset
         mov bx, 59; indice da coluna do 'CACA_PALAVRAS'
         mov di, 1140; indice da linha do 'CACA_PALAVRAS'    
     
-    ;reseta variaveis de controle
-        mov comparaPalavraEncontrouInicio[0], 0h
-        mov comparaPalavraEncontrouInicio[1], 0h
-        mov comparaPalavraEncontrouInicio[2], 0h
-        mov comparaPalavraEncontrouInicio[3], 0h    
+    ;reseta variaveis de controle      
+            mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
+            mov comparaPalavraEncontrouInicio[1], bl
+            mov ax, di
+            mov comparaPalavraEncontrouInicio[2], ah;grava linha
+            mov comparaPalavraEncontrouInicio[3], al
 
 
     buscaPalavraVerticalOpostoComp:
@@ -433,7 +434,7 @@ buscaPalavraVerticalOposto:
         
         buscaPalavraVerticalOpostoAchouTrataCase:                
             dec cx
-            inc di, 60     
+            add di, 60     
             call trataCase   
             cmp cx, 0
             jne buscaPalavraVerticalOpostoAchouTrataCase
