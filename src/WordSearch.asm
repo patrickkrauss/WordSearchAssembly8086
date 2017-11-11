@@ -1,6 +1,24 @@
 data segment
-    CACA_PALAVRAS   DB  "ASDFKASJFLOASJCFLKJASKRUMEUCULFJKLSAJKDSVMNMSDPFKVLSADFDSARO"
-                    DB  "KSAOJFLKASKFLKUSAJSDKFJSADKFJKSADJFLKSAJFKLJSALKFJLKASJCFKAA",0
+    CACA_PALAVRAS   DB    "ASDFKASJFLKASJDFLKJASKRUEIJDSLFJKLSAJKDSVMNMSDPFKVLSADFDSART" 
+                    DB    "KSAOJFLKASJFLKASAJSDKFJSADKFJKSADJFLKSAJFKLJSALKFJLKASJCFKAA" 
+                    DB    "ASJDFKSADKFJSKAREJADSREWUUTJBKNBDKGFPTHHFKSJRKDAJDKSHHAASDBB" 
+                    DB    "JDSAKFJESIURVMLNFSKTYRSIUOVHKLSDFGREUIFSLKGHROIGJFKSDNKLSUAA" 
+                    DB    "RUQLIOEUROIQEWURIODSMSADFJKSDJVXCMJASDKFVSALKFJKLSADNFLKSDUU" 
+                    DB    "ASKCFJKALSDJFLKASDJFLKSAJDFLKASJDKLFJSALIKFJLSDKAJKESASLKAHH" 
+                    DB    "RQWEIRUQWEISDFJHSADJFHSAUIFUIWQUERIUEWASDDJSATKLFJRDOKJFSSEE" 
+                    DB    "ASDTFPOASIDFOPSAIDFOPAISDOPFIASOPFISAPODEIOPASDIFOPSAIFOOFHH" 
+                    DB    "ASDFASDKFLSADKFLASKDFCLSAIDOFRIEJJVDFSAIOOSADIFOSDIOPFISDODD" 
+                    DB    "ASPDFIASPOAFIPAOSDFIPACOMPUTADORFOPSADIFOPSDIFOPSDAOPFDSATAA" 
+                    DB    "ASDFIEWOPRIEWOIREWOPQIROQWEIROPEWQIRPOWQEIOPRIWQORIWQEPOIREE" 
+                    DB    "ASDFASDJRKASDJFKLASDJFLKDSAJFLKSDAJFASLKCDJFLKCSADFDSKSLADEE" 
+                    DB    "ASDFASDOISADFISOADIFASDFISAODIFOSADIFSAODPIFPOSADIFOPDSIISAA" 
+                    DB    "ASDOPFSADFINVNCXJDFSIFDSNFLSDAFUSADFUSDAIFUISADUFIODSAUISDDD" 
+                    DB    "QWERUSIOWERUIOQWEURIOWEQUIRWEQUIORUQWOEIUSNVDMSADFKLSJDALKBB" 
+                    DB    "LSKDEPOWELNVMXNCFDSLKLSEYEFMDSHVAFDJNFSYFDSNFSDAYUEQSDSAAACC" 
+                    DB    "ALSRKLASDKLCASDLIURIWEURIEWQURIOQEWURIOFDSHFJSADHFJKSDADDDDD" 
+                    DB    "VXPMZXESUOMXZNCVMIEOIOPDSIFOSDIOFISDAOFIOSADIFODSIFOSDAIODDD" 
+                    DB    "QMIERUQIWERUIQWEURIOQWEURIQWUERIUQWEIRUQWIOERUIQWEURIEWUUQAA" 
+                    DB    "IWERQUWIRUQWEIORUQIWOERUOIQWEUROIQWUEROIUQWOIEWRUIWSDVFSDHQQ",0 
 
     msgDigitePalavra db "Digite a palavra a ser procurada:",13,10,"$"
     msgExtouroVar db "Voce atingiu o tamanho maximo da palavra!"
@@ -11,7 +29,7 @@ data segment
 
     palavraAtual DB "                    $";
     comparaPalavraEncontrouInicio DB 00h,0Ch,00h,00h ;00 - Coluna 00 - linha;
-    comparaPalavraEncontrouFim    DB 00h,10h,00h,00h ;00 - Coluna 00 - linha;
+    comparaPalavraEncontrouFim    DB 00h,00h,00h,00h ;00 - Coluna 00 - linha;
 
     dsColuna DB "coluna $"
     dsLinha DB " linha $"
@@ -316,7 +334,115 @@ buscaPalavraDiagonalInfEsqParaSupDir:
 
 ;-----------------------------------------------
 buscaPalavraVerticalOposto:
-    ret;nao implementado
+    ;reseta registradores usados
+        mov cx, 0; indice da coluna da 'palavraAtual'
+        mov dx, 0; indice da coluna do 'CACA_PALAVRAS' reset
+        mov bx, 59; indice da coluna do 'CACA_PALAVRAS'
+        mov di, 1140; indice da linha do 'CACA_PALAVRAS'    
+    
+    ;reseta variaveis de controle
+        mov comparaPalavraEncontrouInicio[0], 0h
+        mov comparaPalavraEncontrouInicio[1], 0h
+        mov comparaPalavraEncontrouInicio[2], 0h
+        mov comparaPalavraEncontrouInicio[3], 0h    
+
+
+    buscaPalavraVerticalOpostoComp:
+        mov si, cx
+        cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
+        je buscaPalavraVerticalOpostoAchou;move o fluxo para o rotulo que trata encontrar a palavra.
+        mov si, di                         
+        cmp CACA_PALAVRAS[bx + si], "$";verifica se e o fim da tabela em que se esta procurando
+        je buscaPalavraVerticalOpostoNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        cmp CACA_PALAVRAS[bx + si], 0;verifica se e o fim da tabela em que se esta procurando
+        je buscaPalavraVerticalOpostoNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        mov al, CACA_PALAVRAS[bx + si]
+        mov si, cx
+        cmp al, palavraAtual[si];compara as letras nos indices atuais nas duas variaveis
+        je buscaPalavraVerticalOpostoCompCaracterIgual;move fluxo para  desencontro de letras (palavras nao sao iguais)
+        
+        cmp al, 'a'
+        js buscaPalavraVerticalOpostoCompUpperCaseFim
+        cmp al, 'z'  
+        jg buscaPalavraVerticalOpostoCompUpperCaseFim   
+        sub al, 20h
+        cmp al, palavraAtual[si]  
+        je buscaPalavraVerticalOpostoCompCaracterIgual     
+        buscaPalavraVerticalOpostoCompUpperCaseFim: 
+        
+        cmp al, 'A'
+        js buscaPalavraVerticalOpostoCompLowerCaseFim
+        cmp al, 'Z'  
+        jg buscaPalavraVerticalOpostoCompLowerCaseFim   
+        add al, 20h
+        cmp al, palavraAtual[si]  
+        je buscaPalavraVerticalOpostoCompCaracterIgual     
+        buscaPalavraVerticalOpostoCompLowerCaseFim:
+        
+        jmp buscaPalavraVerticalOpostoCompCaracterDif         
+        
+        buscaPalavraVerticalOpostoCompCaracterIgual:
+        
+            inc cx;avanca os indices, para continuar comparacao
+            sub di, 60
+            cmp di, 0;verifica se o indice da linha do 'CACA_PALAVRAS' e 60
+            je  buscaPalavraVerticalOpostoEstouro;trata nova linha;
+            jmp buscaPalavraVerticalOpostoComp;retorna para comparar proximos caracteres
+
+    buscaPalavraVerticalOpostoEstouro:
+        mov dx, 0;emula valor 59 em dx, para reaproveitar funcionamento do tratamento de caracteres diferentes
+        jmp buscaPalavraVerticalOpostoCompCaracterDif
+
+    buscaPalavraVerticalOpostoCompCaracterDif:
+        mov cx, 0; reseta indices
+        sub di, 60
+        jnc buscaPalavraVerticalOpostoLinhaOk; 
+        mov di, 1140     
+        dec dx               ;trata o estouro da linha
+        jmp buscaPalavraVerticalOpostoLinhaOk
+
+        buscaPalavraVerticalOpostoLinhaOk:               
+            ;grava o caracter de inicio como sendo a posicao atual
+            mov bx, dx
+            mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
+            mov comparaPalavraEncontrouInicio[1], bl
+            mov ax, di
+            mov comparaPalavraEncontrouInicio[2], ah;grava linha
+            mov comparaPalavraEncontrouInicio[3], al
+            jmp buscaPalavraVerticalOpostoComp
+
+
+    buscaPalavraVerticalOpostoNaoAchou:    
+        ;reseta variaveis de inicio e fim.
+        mov comparaPalavraEncontrouFim[0], 0h
+        mov comparaPalavraEncontrouFim[1], 0h    
+        mov comparaPalavraEncontrouFim[2], 0h    
+        mov comparaPalavraEncontrouFim[3], 0h    
+        mov comparaPalavraEncontrouInicio[0], 0h
+        mov comparaPalavraEncontrouInicio[1], 0h
+        mov comparaPalavraEncontrouInicio[2], 0h
+        mov comparaPalavraEncontrouInicio[3], 0h
+        jmp fimBuscaPalavraVerticalOposto
+    buscaPalavraVerticalOpostoAchou:   
+        ;grava a posiacao fim.
+        mov comparaPalavraEncontrouFim[0], bh
+        mov comparaPalavraEncontrouFim[1], bl
+        mov ax, di
+        mov comparaPalavraEncontrouFim[2], ah
+        mov comparaPalavraEncontrouFim[3], al
+        
+        buscaPalavraVerticalOpostoAchouTrataCase:                
+            dec cx
+            inc di, 60     
+            call trataCase   
+            cmp cx, 0
+            jne buscaPalavraVerticalOpostoAchouTrataCase
+        
+        jmp fimBuscaPalavraVerticalOposto
+    fimBuscaPalavraVerticalOposto:
+        ret                                      
+
+
 
 ;-----------------------------------------------
 buscaPalavraHorizontalOposto:
@@ -324,7 +450,115 @@ buscaPalavraHorizontalOposto:
 
 ;-----------------------------------------------
 buscaPalavraVertical:
-    ret;nao implementado
+    ;reseta registradores usados
+        mov cx, 0; indice da coluna da 'palavraAtual'
+        mov dx, 0; indice da coluna do 'CACA_PALAVRAS' reset
+        mov bx, 0; indice da coluna do 'CACA_PALAVRAS'
+        mov di, 0; indice da linha do 'CACA_PALAVRAS'    
+    
+    ;reseta variaveis de controle
+        mov comparaPalavraEncontrouInicio[0], 0h
+        mov comparaPalavraEncontrouInicio[1], 0h
+        mov comparaPalavraEncontrouInicio[2], 0h
+        mov comparaPalavraEncontrouInicio[3], 0h    
+
+
+    buscaPalavraVerticalComp:
+        mov si, cx
+        cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
+        je buscaPalavraVerticalAchou;move o fluxo para o rotulo que trata encontrar a palavra.
+        mov si, di                         
+        cmp CACA_PALAVRAS[bx + si], "$";verifica se e o fim da tabela em que se esta procurando
+        je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        cmp CACA_PALAVRAS[bx + si], 0;verifica se e o fim da tabela em que se esta procurando
+        je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        mov al, CACA_PALAVRAS[bx + si]
+        mov si, cx
+        cmp al, palavraAtual[si];compara as letras nos indices atuais nas duas variaveis
+        je buscaPalavraVerticalCompCaracterIgual;move fluxo para  desencontro de letras (palavras nao sao iguais)
+        
+        cmp al, 'a'
+        js buscaPalavraVerticalCompUpperCaseFim
+        cmp al, 'z'  
+        jg buscaPalavraVerticalCompUpperCaseFim   
+        sub al, 20h
+        cmp al, palavraAtual[si]  
+        je buscaPalavraVerticalCompCaracterIgual     
+        buscaPalavraVerticalCompUpperCaseFim: 
+        
+        cmp al, 'A'
+        js buscaPalavraVerticalCompLowerCaseFim
+        cmp al, 'Z'  
+        jg buscaPalavraVerticalCompLowerCaseFim   
+        add al, 20h
+        cmp al, palavraAtual[si]  
+        je buscaPalavraVerticalCompCaracterIgual     
+        buscaPalavraVerticalCompLowerCaseFim:
+        
+        jmp buscaPalavraVerticalCompCaracterDif         
+        
+        buscaPalavraVerticalCompCaracterIgual:
+        
+            inc cx;avanca os indices, para continuar comparacao
+            add di, 60
+            cmp di, 1200;verifica se o indice da linha do 'CACA_PALAVRAS' e 60
+            je  buscaPalavraVerticalEstouro;trata nova linha;
+            jmp buscaPalavraVerticalComp;retorna para comparar proximos caracteres
+
+    buscaPalavraVerticalEstouro:
+        mov dx, 1140;emula valor 59 em dx, para reaproveitar funcionamento do tratamento de caracteres diferentes
+        jmp buscaPalavraVerticalCompCaracterDif
+
+    buscaPalavraVerticalCompCaracterDif:
+        mov cx, 0; reseta indices
+        add di, 60    
+        cmp di, 1200
+        jne buscaPalavraVerticalLinhaOk; 
+        mov di, 0     
+        inc dx               ;trata o estouro da linha
+        jmp buscaPalavraVerticalLinhaOk
+
+        buscaPalavraVerticalLinhaOk:               
+            ;grava o caracter de inicio como sendo a posicao atual
+            mov bx, dx
+            mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
+            mov comparaPalavraEncontrouInicio[1], bl
+            mov ax, di
+            mov comparaPalavraEncontrouInicio[2], ah;grava linha
+            mov comparaPalavraEncontrouInicio[3], al
+            jmp buscaPalavraVerticalComp
+
+
+    buscaPalavraVerticalNaoAchou:    
+        ;reseta variaveis de inicio e fim.
+        mov comparaPalavraEncontrouFim[0], 0h
+        mov comparaPalavraEncontrouFim[1], 0h    
+        mov comparaPalavraEncontrouFim[2], 0h    
+        mov comparaPalavraEncontrouFim[3], 0h    
+        mov comparaPalavraEncontrouInicio[0], 0h
+        mov comparaPalavraEncontrouInicio[1], 0h
+        mov comparaPalavraEncontrouInicio[2], 0h
+        mov comparaPalavraEncontrouInicio[3], 0h
+        jmp fimBuscaPalavraVertical
+    buscaPalavraVerticalAchou:   
+        ;grava a posiacao fim.
+        mov comparaPalavraEncontrouFim[0], bh
+        mov comparaPalavraEncontrouFim[1], bl
+        mov ax, di
+        mov comparaPalavraEncontrouFim[2], ah
+        mov comparaPalavraEncontrouFim[3], al
+        
+        buscaPalavraVerticalAchouTrataCase:                
+            dec cx
+            sub di, 60     
+            call trataCase   
+            cmp cx, 0
+            jne buscaPalavraVerticalAchouTrataCase
+        
+        jmp fimBuscaPalavraVertical
+    fimBuscaPalavraVertical:
+        ret                                      
+
 
 ;-----------------------------------------------
 buscaPalavraHorizontal:
@@ -391,12 +625,12 @@ buscaPalavraHorizontal:
         mov cx, 0; reseta indices
         inc dx
         cmp dx, 60
-        jne buscaPalavraHorizontaLinhaOk; 
+        jne buscaPalavraHorizontalLinhaOk; 
         mov dx, 0
         add di, 60                        ;trata o estouro da linha
-        jmp buscaPalavraHorizontaLinhaOk
+        jmp buscaPalavraHorizontalLinhaOk
 
-        buscaPalavraHorizontaLinhaOk:               
+        buscaPalavraHorizontalLinhaOk:               
             ;grava o caracter de inicio como sendo a posicao atual
             mov bx, dx
             mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
