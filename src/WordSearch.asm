@@ -559,7 +559,7 @@ buscaPalavraHorizontalOposto:
 buscaPalavraVertical:
     ;reseta registradores usados
         mov cx, 0; indice da coluna da 'palavraAtual'
-        mov dx, 0; indice da coluna do 'CACA_PALAVRAS' reset
+        mov dx, 0; indice da linha do 'CACA_PALAVRAS' reset
         mov bx, 0; indice da coluna do 'CACA_PALAVRAS'
         mov di, 0; indice da linha do 'CACA_PALAVRAS'    
     
@@ -574,11 +574,11 @@ buscaPalavraVertical:
         mov si, cx
         cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
         je buscaPalavraVerticalAchou;move o fluxo para o rotulo que trata encontrar a palavra.
-        mov si, di                         
+        mov si, di                           
         cmp CACA_PALAVRAS[bx + si], "$";verifica se e o fim da tabela em que se esta procurando
         je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         cmp CACA_PALAVRAS[bx + si], 0;verifica se e o fim da tabela em que se esta procurando
-        je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra                                                            
         mov al, CACA_PALAVRAS[bx + si]
         mov si, cx
         cmp al, palavraAtual[si];compara as letras nos indices atuais nas duas variaveis
@@ -608,7 +608,7 @@ buscaPalavraVertical:
         
             inc cx;avanca os indices, para continuar comparacao
             add di, 60
-            cmp di, 1200;verifica se o indice da linha do 'CACA_PALAVRAS' e 60
+            cmp di, 1260;verifica se o indice da linha do 'CACA_PALAVRAS' e 60
             je  buscaPalavraVerticalEstouro;trata nova linha;
             jmp buscaPalavraVerticalComp;retorna para comparar proximos caracteres
 
@@ -618,21 +618,20 @@ buscaPalavraVertical:
 
     buscaPalavraVerticalCompCaracterDif:
         mov cx, 0; reseta indices
-        add di, 60    
-        cmp di, 1200
+        add dx, 60    
+        cmp dx, 1200
         jne buscaPalavraVerticalLinhaOk; 
-        mov di, 0     
-        inc dx               ;trata o estouro da linha
+        mov dx, 0
+        inc bx
         jmp buscaPalavraVerticalLinhaOk
 
         buscaPalavraVerticalLinhaOk:               
             ;grava o caracter de inicio como sendo a posicao atual
-            mov bx, dx
             mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
-            mov comparaPalavraEncontrouInicio[1], bl
-            mov ax, di
-            mov comparaPalavraEncontrouInicio[2], ah;grava linha
-            mov comparaPalavraEncontrouInicio[3], al
+            mov comparaPalavraEncontrouInicio[1], bl                                            
+            mov di, dx
+            mov comparaPalavraEncontrouInicio[2], dh;grava linha
+            mov comparaPalavraEncontrouInicio[3], dl
             jmp buscaPalavraVerticalComp
 
 
