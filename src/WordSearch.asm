@@ -696,7 +696,8 @@ lerPalavra:
     lea dx, msgDigitePalavra; insere posicao da mensagem 'msgDigitePalavra', nodx
     mov ah, 9; joga 9 para ah, preparando para imprimir mensagem
     int 21h; chama a interupcao 33 (21h)
-
+    mov dx,01; usado para validar se alguma letra foi digitada
+    
     lerLetra:
         mov ah, 8; joga 8 para ah, preparando para receber letra
         int 21h ; chama a interupcao 33 (21h)
@@ -721,8 +722,14 @@ lerPalavra:
         mov ah, 9; joga 9 para ah, preparando para imprimir mensagem
         int 21h; chama a interupcao 33 (21h)
         jmp fimLerPalavra; finaliza leitura
+    
+    exibirMensagemdeveDigitarAlgumaLetra: 
+        mov dx,01; usado para validar se alguma letra foi digitada
+        jmp lerLetra        
 
     fimLerPalavra:
+        cmp dx,01
+        je exibirMensagemdeveDigitarAlgumaLetra;   
         mov palavraAtual[si], "$"; inclui marcador de final
         lea dx, linhaEmBranco; joga a posicao de 'linhaEmBranco' para dx, preparando-se para imprimi-lo
         mov ah, 9; joga 9 para ah, preparando para imprimir mensagem
