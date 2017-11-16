@@ -30,7 +30,10 @@ data segment
     palavraAtual DB "                    $";
     comparaPalavraEncontrouInicio DB 00h,0Ch,00h,00h ;00 - Coluna 00 - linha;
     comparaPalavraEncontrouFim    DB 00h,00h,00h,00h ;00 - Coluna 00 - linha;
-
+    
+    comparaPalavraEncontrouInicioDiagonal DW 0h,0h ;0 - Coluna 0 - linha;
+    comparaPalavraEncontrouFimDiagonal DW 0h,0h ;0 - Coluna 0 - linha;
+    
     dsColuna DB "coluna $"
     dsLinha DB " linha $"
     dsInicio DB "Inicio em $"
@@ -57,7 +60,7 @@ start:
     ;ADD YOUR CODE HERE
 
 CicloPricipal:        
-    call printaCacaPalavra
+    ;call printaCacaPalavra
     call lerPalavra
     call buscaPalavraTodasDirecoes
     jmp CicloPricipal
@@ -98,36 +101,36 @@ printaCacaPalavra:
 buscaPalavraTodasDirecoes:
     
     ;-------------------Busca Horizontal---------------------
-            call buscaPalavraHorizontal
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            call buscaPalavraHorizontalOposto
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
+            ;call buscaPalavraHorizontal
+            ;mov al, comparaPalavraEncontrouFim[3]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;mov al, comparaPalavraEncontrouFim[1]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;call buscaPalavraHorizontalOposto
+            ;mov al, comparaPalavraEncontrouFim[3]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;mov al, comparaPalavraEncontrouFim[1]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
     
     ;--------------Busca Vertical---------------------
-            call buscaPalavraVertical
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            call buscaPalavraVerticalOposto
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
+            ;call buscaPalavraVertical
+            ;mov al, comparaPalavraEncontrouFim[3]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;mov al, comparaPalavraEncontrouFim[1]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;call buscaPalavraVerticalOposto
+            ;mov al, comparaPalavraEncontrouFim[3]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;mov al, comparaPalavraEncontrouFim[1]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
     
     ;-------------------Busca Diagonal---------------------
             ;---Diagonal Superior----------------------
@@ -146,13 +149,10 @@ buscaPalavraTodasDirecoes:
                     ;cmp al, 00
                     ;jne buscaPalavraTodasDirecoesAchou
             ;---Diagonal Inferior----------------------
-                    ;call buscaPalavraDiagonalInferiorDireita
-                    ;mov al, comparaPalavraEncontrouFim[3]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
-                    ;mov al, comparaPalavraEncontrouFim[1]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
+                    call buscaPalavraDiagonalInferiorDireita
+                    mov ax, comparaPalavraEncontrouFimDiagonal
+                    cmp ax, 00
+                    jne buscaPalavraTodasDirecoesAchouDiagonal
                     ;call buscaPalavraDiagonalInferiorEsquerda
                     ;mov al, comparaPalavraEncontrouFim[3]
                     ;cmp al, 00
@@ -161,8 +161,11 @@ buscaPalavraTodasDirecoes:
                     ;cmp al, 00
                     ;jne buscaPalavraTodasDirecoesAchou
     
-    jmp buscaPalavraTodasDirecoesNaoAchou
-
+    jmp buscaPalavraTodasDirecoesNaoAchou  
+    
+    buscaPalavraTodasDirecoesAchouDiagonal:
+        call imprimeResultadoDiagonal
+        jmp buscaPalavraTodasDirecoesFim
     buscaPalavraTodasDirecoesAchou:
         call imprimeResultado
         jmp buscaPalavraTodasDirecoesFim
@@ -175,6 +178,88 @@ buscaPalavraTodasDirecoes:
         ret    
 
 
+;-----------------------------------------------
+imprimeResultadoDiagonal:
+    mov bx, comparaPalavraEncontrouInicioDiagonal[0] 
+    mov ax, comparaPalavraEncontrouInicioDiagonal[2]
+
+
+    mov dx, comparaPalavraEncontrouFimDiagonal[0]
+    mov cx, comparaPalavraEncontrouFimDiagonal[2]
+    push dx
+    push ax
+    push cx
+        ;Printa Inicio
+            lea dx, dsInicio
+            mov ah, 09
+            int 21h
+            lea dx, dsColuna
+            mov ah, 09
+            int 21h
+            ;Printa coluna
+                mov  ax,bx 
+                aam
+                add  ax, "00"
+                xchg al, ah
+                mov  dx, ax
+                mov  ah, 02h
+                int  21h
+                mov  dl, dh
+                int  21h 
+            ;Quebra linha
+            lea dx, dsLinha
+            mov ah, 09
+            int 21h
+            ;Printa linha
+                pop ax
+                aam
+                add  ax, "00"
+                xchg al, ah
+                mov  dx, ax
+                mov  ah, 02h
+                int  21h
+                mov  dl, dh
+                int  21h      
+    lea dx, quebraLinha
+    mov ah, 09
+    int 21h             
+    ;Printa Fim
+            lea dx, dsFim
+            mov ah, 09
+            int 21h
+            lea dx, dsColuna
+            mov ah, 09
+            int 21h
+            ;Printa coluna
+                pop dx
+                mov ax,dx 
+                aam
+                add  ax, "00"
+                xchg al, ah
+                mov  dx, ax
+                mov  ah, 02h
+                int  21h
+                mov  dl, dh
+                int  21h 
+            lea dx, dsLinha
+            mov ah, 09
+            int 21h
+            ;Printa linha
+                pop cx
+                mov ax,cx
+                aam
+                add  ax, "00"
+                xchg al, ah
+                mov  dx, ax
+                mov  ah, 02h
+                int  21h
+                mov  dl, dh
+                int  21h      
+    ;Quebra linha
+    lea dx, dsLinha
+    mov ah, 09
+    int 21h
+ret
 ;-----------------------------------------------
 imprimeResultado:
     mov bh, comparaPalavraEncontrouInicio[0]
@@ -342,12 +427,12 @@ buscaPalavraDiagonalInferiorDireita:
     ;reseta variaveis de controle
         mov pocisaoAtualBuscaDiagonal,0
         mov posicaoDaPalavraAtual,0
-        mov comparaPalavraEncontrouInicio[0], 0h
-        mov comparaPalavraEncontrouInicio[1], 0h
-        mov comparaPalavraEncontrouInicio[2], 0h
-        mov comparaPalavraEncontrouInicio[3], 0h    
+        mov comparaPalavraEncontrouInicioDiagonal[0], 0h
+        mov comparaPalavraEncontrouInicioDiagonal[2], 0h
     
         percorreCacaPalavraBuscaPalavraDiagonalInferiorDireita:
+             mov comparaPalavraEncontrouInicioDiagonal[0], si
+             mov comparaPalavraEncontrouInicioDiagonal[2], di
              mov ax,si
              add ax,di 
              mov pocisaoAtualBuscaDiagonal,ax
@@ -423,12 +508,8 @@ buscaPalavraDiagonalInferiorDireita:
         jmp fimBuscaPalavraDiagonalInferiorDireita
     buscaPalavraDiagonalInferiorDireitaAchou:   
         ;grava a posiacao fim.
-        ;mov comparaPalavraEncontrouFim[0], si
-        mov comparaPalavraEncontrouFim[1], 0
-        mov ax, di
-        ;mov comparaPalavraEncontrouFim[2], di
-        mov comparaPalavraEncontrouFim[3], 0
-        jmp buscaPalavraDiagonalInferiorDireitaAchou    ;Teste
+        mov ax,[pocisaoAtualBuscaDiagonal]
+        call trataPocisaoFinalDiagonal
         
 fimBuscaPalavraDiagonalInferiorDireita:
 ret        
@@ -1003,6 +1084,15 @@ comparacaoArrayFalse:
     chegouAoFinalCacaPalavra:
        mov acabouBuscaDiagonal,1
        jmp fimPulaParaProximaLinha
+;-----------------------------------------------
+trataPocisaoFinalDiagonal:
+    mov dx,0 
+    mov bx,60
+    div bx
+    mov comparaPalavraEncontrouFimDiagonal[0], dx
+    mov comparaPalavraEncontrouFimDiagonal[2], ax
+ret    
+
 ;-----------------------------------------------
 fimPrograma:
     mov ax, 4c00h ; exit to operating system.
