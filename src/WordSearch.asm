@@ -114,13 +114,6 @@ buscaPalavraTodasDirecoes:
             mov al, comparaPalavraEncontrouFim[1]
             cmp al, 00
             jne buscaPalavraTodasDirecoesAchou
-            ;call buscaPalavraHorizontalOposto
-            ;mov al, comparaPalavraEncontrouFim[3]
-            ;cmp al, 00
-            ;jne buscaPalavraTodasDirecoesAchou
-            ;mov al, comparaPalavraEncontrouFim[1]
-            ;cmp al, 00
-            ;jne buscaPalavraTodasDirecoesAchou
     
     ;--------------Busca Vertical---------------------
             call buscaPalavraVertical
@@ -130,36 +123,12 @@ buscaPalavraTodasDirecoes:
             mov al, comparaPalavraEncontrouFim[1]
             cmp al, 00
             jne buscaPalavraTodasDirecoesAchou
-            ;call buscaPalavraVerticalOposto
-            ;mov al, comparaPalavraEncontrouFim[3]
-            ;cmp al, 00
-            ;jne buscaPalavraTodasDirecoesAchou
-            ;mov al, comparaPalavraEncontrouFim[1]
-            ;cmp al, 00
-            ;jne buscaPalavraTodasDirecoesAchou
     
     ;-------------------Busca Diagonal---------------------
             ;---Diagonal Superior----------------------
-                    ;call buscaPalavraDiagonalSuperiorDireita
-                    ;mov al, comparaPalavraEncontrouFim[3]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
-                    ;mov al, comparaPalavraEncontrouFim[1]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
-                    ;call buscaPalavraDiagonalSuperiorEsquerda
-                    ;mov al, comparaPalavraEncontrouFim[3]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
-                    ;mov al, comparaPalavraEncontrouFim[1]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
+                    
+                   
             ;---Diagonal Inferior----------------------
-                    ;call buscaPalavraDiagonalInferiorDireita
-                    ;mov ax, comparaPalavraEncontrouFimDiagonal
-                    ;cmp ax, 00
-                    ;jne buscaPalavraTodasDirecoesAchouDiagonal
-                    ; falta coisas
                     call buscaPalavraDiagonalSupDirParaInfEsq
                     mov al, comparaPalavraEncontrouFim[3]
                     cmp al, 00
@@ -168,7 +137,6 @@ buscaPalavraTodasDirecoes:
                     cmp al, 00
                     jne buscaPalavraTodasDirecoesAchou     
                     
-                    ;buscaPalavraDiagonalSupEsqParaInfDir    
                     call buscaPalavraDiagonalSupEsqParaInfDir
                     mov al, comparaPalavraEncontrouFim[3]
                     cmp al, 00
@@ -178,10 +146,7 @@ buscaPalavraTodasDirecoes:
                     jne buscaPalavraTodasDirecoesAchou   
     
     jmp buscaPalavraTodasDirecoesNaoAchou  
-    
-    buscaPalavraTodasDirecoesAchouDiagonal:
-        call imprimeResultadoDiagonal
-        jmp buscaPalavraTodasDirecoesFim
+
     buscaPalavraTodasDirecoesAchou:
         call imprimeResultado
         jmp buscaPalavraTodasDirecoesFim
@@ -194,88 +159,6 @@ buscaPalavraTodasDirecoes:
         ret    
 
 
-;-----------------------------------------------
-imprimeResultadoDiagonal:
-    mov bx, comparaPalavraEncontrouInicioDiagonal[0] 
-    mov ax, comparaPalavraEncontrouInicioDiagonal[2]
-
-
-    mov dx, comparaPalavraEncontrouFimDiagonal[0]
-    mov cx, comparaPalavraEncontrouFimDiagonal[2]
-    push dx
-    push ax
-    push cx
-        ;Printa Inicio
-            lea dx, dsInicio
-            mov ah, 09
-            int 21h
-            lea dx, dsColuna
-            mov ah, 09
-            int 21h
-            ;Printa coluna
-                mov  ax,bx 
-                aam
-                add  ax, "00"
-                xchg al, ah
-                mov  dx, ax
-                mov  ah, 02h
-                int  21h
-                mov  dl, dh
-                int  21h 
-            ;Quebra linha
-            lea dx, dsLinha
-            mov ah, 09
-            int 21h
-            ;Printa linha
-                pop ax
-                aam
-                add  ax, "00"
-                xchg al, ah
-                mov  dx, ax
-                mov  ah, 02h
-                int  21h
-                mov  dl, dh
-                int  21h      
-    lea dx, quebraLinha
-    mov ah, 09
-    int 21h             
-    ;Printa Fim
-            lea dx, dsFim
-            mov ah, 09
-            int 21h
-            lea dx, dsColuna
-            mov ah, 09
-            int 21h
-            ;Printa coluna
-                pop dx
-                mov ax,dx 
-                aam
-                add  ax, "00"
-                xchg al, ah
-                mov  dx, ax
-                mov  ah, 02h
-                int  21h
-                mov  dl, dh
-                int  21h 
-            lea dx, dsLinha
-            mov ah, 09
-            int 21h
-            ;Printa linha
-                pop cx
-                mov ax,cx
-                aam
-                add  ax, "00"
-                xchg al, ah
-                mov  dx, ax
-                mov  ah, 02h
-                int  21h
-                mov  dl, dh
-                int  21h      
-    ;Quebra linha
-    lea dx, dsLinha
-    mov ah, 09
-    int 21h
-ret
 ;-----------------------------------------------
 imprimeResultado:
     mov bh, comparaPalavraEncontrouInicio[0]
@@ -357,41 +240,6 @@ imprimeResultado:
         ret
 
 ;-----------------------------------------------
-imprimeAl:
-   cmp Al, 19H; 19H = 00011001 = 25
-   jg imprimeAlMaiorQue25
-   call imprimeAlMenorQue26
-   jmp imprimeAlFim
-
-   imprimeAlMenorQue26:
-       add Al, "A"
-       MOV DL, Al
-       MOV AH, 2
-       INT 21H
-       ret
-
-   imprimeAlMaiorQue25:
-       push dx
-           push cx
-               push bx
-                   mov dx,0 ; clear dividend, high
-                   mov ah,0
-                   mov cx,26
-                   div cx ; AX = divisao, DX = resto
-                   dec al
-                   mov bx, dx
-                   call imprimeAl
-                   mov ax, bx
-                   call imprimeAl
-               pop bx
-           pop cx
-       pop dx
-
-
-   imprimeAlFim:
-        ret
-
-;-----------------------------------------------
 imprimeAlNum:
    cmp Al, 09h; 09H = 00001001 = 9
    jg imprimeAlNumMaiorQue9
@@ -424,109 +272,6 @@ imprimeAlNum:
 
    imprimeAlNumFim:
         ret
-
-;-----------------------------------------------
-buscaPalavraDiagonalSuperiorDireita:
-    ret;nao implementado
-
-;-----------------------------------------------
-buscaPalavraDiagonalSuperiorEsquerda:
-    ret;nao implementado
-
-;-----------------------------------------------
-buscaPalavraDiagonalInferiorDireita:
-    
-    ;reseta registradores usados
-        mov di,0; indice da linha do 'CACA_PALAVRAS'
-        lea si,CACA_PALAVRAS; indice da coluna do 'CACA_PALAVRAS'
-        
-    ;reseta variaveis de controle
-        mov pocisaoAtualBuscaDiagonal,0
-        mov posicaoDaPalavraAtual,0
-        mov comparaPalavraEncontrouInicioDiagonal[0], 0h
-        mov comparaPalavraEncontrouInicioDiagonal[2], 0h
-    
-        percorreCacaPalavraBuscaPalavraDiagonalInferiorDireita:
-             mov comparaPalavraEncontrouInicioDiagonal[0], si
-             mov comparaPalavraEncontrouInicioDiagonal[2], di
-             mov ax,si
-             add ax,di 
-             mov pocisaoAtualBuscaDiagonal,ax
-             loopBuscaPalavraDiagonalInferiorDireita:
-                 
-                 ;------------Valida se pocisao � valida;  bx = Poc do cacaPalavra; dx = Array para comparar
-                 ;lea bx,CACA_PALAVRAS
-                 ;add bx,[pocisaoAtualBuscaDiagonal]
-				 ;lea dx,arrayDeComparacaoDiagonaDireita
-                 ;call comparaArray
-                 ;cmp validacaoPocisaoDiagonalAux,0 ; se for 0 pocisao � invalida
-                 ;je buscaPalavraDiagonalInferiorDireitaNaoAchou
-                 
-                 ;-------------------------------------------------------------aqui fazer tratamento de maiusculo/minusculo 
-                 
-                 
-                 ;---------------
-                 ;------------Carrega em dl o caractere do cacaPalavras
-                 lea ax,CACA_PALAVRAS
-                 add ax,pocisaoAtualBuscaDiagonal
-                 mov bx,ax
-                 mov dl,[bx]
-                 
-                 ;------------Carrega em dh palavra do usuario e compara
-                 lea ax,palavraAtual
-                 add ax,posicaoDaPalavraAtual
-                 mov bx,ax
-                 mov dh,[bx]
-                 cmp dh,dl  ;Se nao sao iguais vai para prox carac do cacaPalavras
-                 jne avancaParaProximoCaracBuscaDiagonalInferiorDireita
-                  
-                 
-                ;------------Incrementa poc da palavra 
-                mov ax,[posicaoDaPalavraAtual]
-                inc ax 
-                mov posicaoDaPalavraAtual,ax
-                ;------------Compara se poc da palavra atual == $
-                lea ax,palavraAtual
-                add ax,posicaoDaPalavraAtual
-                mov bx,ax
-                cmp [bx],"$"
-                je buscaPalavraDiagonalInferiorDireitaAchou 
-                
-                ;----------Incrementa poc da busca da diagonal
-                mov ax,[pocisaoAtualBuscaDiagonal]
-                add ax,61 
-                mov pocisaoAtualBuscaDiagonal,ax
-            jmp loopBuscaPalavraDiagonalInferiorDireita 
-            
-            avancaParaProximoCaracBuscaDiagonalInferiorDireita:;Vai para proximo caractere do cacaPalavra
-                ;reset das variaveis
-                    mov pocisaoAtualBuscaDiagonal,0
-                    mov posicaoDaPalavraAtual,0
-                call vaiParaProximaLetra
-                cmp acabouBuscaDiagonal,1  ;compara se chegou ao fim do cacaPalavra
-                je buscaPalavraDiagonalInferiorDireitaNaoAchou
-        
-        jmp percorreCacaPalavraBuscaPalavraDiagonalInferiorDireita
-            
-                        
-    buscaPalavraDiagonalInferiorDireitaNaoAchou:    
-        ;reseta variaveis de inicio e fim.
-        mov comparaPalavraEncontrouFim[0], 0h
-        mov comparaPalavraEncontrouFim[1], 0h    
-        mov comparaPalavraEncontrouFim[2], 0h    
-        mov comparaPalavraEncontrouFim[3], 0h    
-        mov comparaPalavraEncontrouInicio[0], 0h
-        mov comparaPalavraEncontrouInicio[1], 0h
-        mov comparaPalavraEncontrouInicio[2], 0h
-        mov comparaPalavraEncontrouInicio[3], 0h
-        jmp fimBuscaPalavraDiagonalInferiorDireita
-    buscaPalavraDiagonalInferiorDireitaAchou:   
-        ;grava a posiacao fim.
-        mov ax,[pocisaoAtualBuscaDiagonal]
-        call trataPocisaoFinalDiagonal
-        
-fimBuscaPalavraDiagonalInferiorDireita:
-ret        
 
 ;-----------------------------------------------   ;buscaPalavraDiagonalInferiorEsquerda
 buscaPalavraDiagonalSupDirParaInfEsq:
@@ -780,229 +525,6 @@ buscaPalavraDiagonalSupEsqParaInfDir:
     fimBuscaPalavraDiagonalSupEsqParaInfDir:
         ret                                      
 
-
-;-----------------------------------------------
-buscaPalavraVerticalOposto:
-    ;reseta registradores usados
-        mov cx, 0; indice da coluna da 'palavraAtual'
-        mov dx, 59; indice da coluna do 'CACA_PALAVRAS' reset
-        mov bx, 59; indice da coluna do 'CACA_PALAVRAS'
-        mov di, 1140; indice da linha do 'CACA_PALAVRAS'    
-    
-    ;reseta variaveis de controle      
-            mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
-            mov comparaPalavraEncontrouInicio[1], bl
-            mov ax, di
-            mov comparaPalavraEncontrouInicio[2], ah;grava linha
-            mov comparaPalavraEncontrouInicio[3], al
-
-
-    buscaPalavraVerticalOpostoComp:
-        mov si, cx
-        cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
-        je buscaPalavraVerticalOpostoAchou;move o fluxo para o rotulo que trata encontrar a palavra.
-        mov si, di                         
-        mov ax, si
-        add ax, bx
-        cmp ax, -1;
-        je buscaPalavraVerticalOpostoNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
-        mov al, CACA_PALAVRAS[bx + si]
-        mov si, cx
-        cmp al, palavraAtual[si];compara as letras nos indices atuais nas duas variaveis
-        je buscaPalavraVerticalOpostoCompCaracterIgual;move fluxo para  desencontro de letras (palavras nao sao iguais)
-        
-        cmp al, 'a'
-        js buscaPalavraVerticalOpostoCompUpperCaseFim
-        cmp al, 'z'  
-        jg buscaPalavraVerticalOpostoCompUpperCaseFim   
-        sub al, 20h
-        cmp al, palavraAtual[si]  
-        je buscaPalavraVerticalOpostoCompCaracterIgual     
-        buscaPalavraVerticalOpostoCompUpperCaseFim: 
-        
-        cmp al, 'A'
-        js buscaPalavraVerticalOpostoCompLowerCaseFim
-        cmp al, 'Z'  
-        jg buscaPalavraVerticalOpostoCompLowerCaseFim   
-        add al, 20h
-        cmp al, palavraAtual[si]  
-        je buscaPalavraVerticalOpostoCompCaracterIgual     
-        buscaPalavraVerticalOpostoCompLowerCaseFim:
-        
-        jmp buscaPalavraVerticalOpostoCompCaracterDif         
-        
-        buscaPalavraVerticalOpostoCompCaracterIgual:
-        
-            inc cx;avanca os indices, para continuar comparacao
-            sub di, 60
-            cmp di, 0;verifica se o indice da linha do 'CACA_PALAVRAS' e 60
-            je  buscaPalavraVerticalOpostoEstouro;trata nova linha;
-            jmp buscaPalavraVerticalOpostoComp;retorna para comparar proximos caracteres
-
-    buscaPalavraVerticalOpostoEstouro:
-        mov dx, 0;emula valor 59 em dx, para reaproveitar funcionamento do tratamento de caracteres diferentes
-        jmp buscaPalavraVerticalOpostoCompCaracterDif
-
-    buscaPalavraVerticalOpostoCompCaracterDif:
-        mov cx, 0; reseta indices
-        sub di, 60
-        jnc buscaPalavraVerticalOpostoLinhaOk; 
-        mov di, 1140     
-        dec dx               ;trata o estouro da linha
-        jmp buscaPalavraVerticalOpostoLinhaOk
-
-        buscaPalavraVerticalOpostoLinhaOk:               
-            ;grava o caracter de inicio como sendo a posicao atual
-            mov bx, dx
-            mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
-            mov comparaPalavraEncontrouInicio[1], bl
-            mov ax, di
-            mov comparaPalavraEncontrouInicio[2], ah;grava linha
-            mov comparaPalavraEncontrouInicio[3], al
-            jmp buscaPalavraVerticalOpostoComp
-
-
-    buscaPalavraVerticalOpostoNaoAchou:    
-        ;reseta variaveis de inicio e fim.
-        mov comparaPalavraEncontrouFim[0], 0h
-        mov comparaPalavraEncontrouFim[1], 0h    
-        mov comparaPalavraEncontrouFim[2], 0h    
-        mov comparaPalavraEncontrouFim[3], 0h    
-        mov comparaPalavraEncontrouInicio[0], 0h
-        mov comparaPalavraEncontrouInicio[1], 0h
-        mov comparaPalavraEncontrouInicio[2], 0h
-        mov comparaPalavraEncontrouInicio[3], 0h
-        jmp fimBuscaPalavraVerticalOposto
-    buscaPalavraVerticalOpostoAchou:   
-        ;grava a posiacao fim.
-        mov comparaPalavraEncontrouFim[0], bh
-        mov comparaPalavraEncontrouFim[1], bl
-        mov ax, di
-        mov comparaPalavraEncontrouFim[2], ah
-        mov comparaPalavraEncontrouFim[3], al
-        
-        buscaPalavraVerticalOpostoAchouTrataCase:                
-            dec cx
-            add di, 60     
-            call trataCase   
-            cmp cx, 0
-            jne buscaPalavraVerticalOpostoAchouTrataCase
-        
-        jmp fimBuscaPalavraVerticalOposto
-    fimBuscaPalavraVerticalOposto:
-        ret                                      
-
-
-
-;-----------------------------------------------
-buscaPalavraHorizontalOposto:
-    ;reseta registradores usados
-        mov cx, 0; indice da coluna da 'palavraAtual'
-        mov dx, 59; indice da coluna do 'CACA_PALAVRAS' reset
-        mov bx, 59; indice da coluna do 'CACA_PALAVRAS'
-        mov di, 1140; indice da linha do 'CACA_PALAVRAS'    
-    
-    ;reseta variaveis de controle      
-        mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
-        mov comparaPalavraEncontrouInicio[1], bl
-        mov ax, di
-        mov comparaPalavraEncontrouInicio[2], ah;grava linha
-        mov comparaPalavraEncontrouInicio[3], al 
-
-
-    buscaPalavraHorizontalOpostoComp:
-        mov si, cx
-        cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
-        je buscaPalavraHorizontalOpostoAchou;move o fluxo para o rotulo que trata encontrar a palavra.
-        mov si, di                         
-        mov ax, di
-        add ax, bx
-        cmp ax, -1
-        je buscaPalavraHorizontalOpostoNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
-        mov al, CACA_PALAVRAS[bx + si]
-        mov si, cx
-        cmp al, palavraAtual[si];compara as letras nos indices atuais nas duas variaveis
-        je buscaPalavraHorizontalOpostoCompCaracterIgual;move fluxo para  desencontro de letras (palavras nao sao iguais)
-        
-        cmp al, 'a'
-        js buscaPalavraHorizontalOpostoCompUpperCaseFim
-        cmp al, 'z'  
-        jg buscaPalavraHorizontalOpostoCompUpperCaseFim   
-        sub al, 20h
-        cmp al, palavraAtual[si]  
-        je buscaPalavraHorizontalOpostoCompCaracterIgual     
-        buscaPalavraHorizontalOpostoCompUpperCaseFim: 
-        
-        cmp al, 'A'
-        js buscaPalavraHorizontalOpostoCompLowerCaseFim
-        cmp al, 'Z'  
-        jg buscaPalavraHorizontalOpostoCompLowerCaseFim   
-        add al, 20h
-        cmp al, palavraAtual[si]  
-        je buscaPalavraHorizontalOpostoCompCaracterIgual     
-        buscaPalavraHorizontalOpostoCompLowerCaseFim:
-        
-        jmp buscaPalavraHorizontalOpostoCompCaracterDif         
-        
-        buscaPalavraHorizontalOpostoCompCaracterIgual:
-        
-            inc cx;avanca os indices, para continuar comparacao
-            dec bx;avanca os indices, para continuar comparacao
-            jc  buscaPalavraHorizontalOpostoEstouro;trata nova linha;
-            jmp buscaPalavraHorizontalOpostoComp;retorna para comparar proximos caracteres
-
-    buscaPalavraHorizontalOpostoEstouro:
-        mov dx, 0;emula valor 59 em dx, para reaproveitar funcionamento do tratamento de caracteres diferentes
-        jmp buscaPalavraHorizontalOpostoCompCaracterDif
-
-    buscaPalavraHorizontalOpostoCompCaracterDif:
-        mov cx, 0; reseta indices
-        dec dx
-        jnc buscaPalavraHorizontalOpostoLinhaOk; 
-        mov dx, 59
-        sub di, 60                        ;trata o estouro da linha
-        jmp buscaPalavraHorizontalOpostoLinhaOk
-
-        buscaPalavraHorizontalOpostoLinhaOk:               
-            ;grava o caracter de inicio como sendo a posicao atual
-            mov bx, dx
-            mov comparaPalavraEncontrouInicio[0], bh ;grava coluna
-            mov comparaPalavraEncontrouInicio[1], bl
-            mov ax, di
-            mov comparaPalavraEncontrouInicio[2], ah;grava linha
-            mov comparaPalavraEncontrouInicio[3], al
-            jmp buscaPalavraHorizontalOpostoComp
-
-
-    buscaPalavraHorizontalOpostoNaoAchou:    
-        ;reseta variaveis de inicio e fim.
-        mov comparaPalavraEncontrouFim[0], 0h
-        mov comparaPalavraEncontrouFim[1], 0h    
-        mov comparaPalavraEncontrouFim[2], 0h    
-        mov comparaPalavraEncontrouFim[3], 0h    
-        mov comparaPalavraEncontrouInicio[0], 0h
-        mov comparaPalavraEncontrouInicio[1], 0h
-        mov comparaPalavraEncontrouInicio[2], 0h
-        mov comparaPalavraEncontrouInicio[3], 0h
-        jmp fimBuscaPalavraHorizontalOposto
-    buscaPalavraHorizontalOpostoAchou:   
-        ;grava a posiacao fim.
-        mov comparaPalavraEncontrouFim[0], bh
-        mov comparaPalavraEncontrouFim[1], bl
-        mov ax, di
-        mov comparaPalavraEncontrouFim[2], ah
-        mov comparaPalavraEncontrouFim[3], al
-        
-        buscaPalavraHorizontalOpostoAchouTrataCase:                
-            inc bx
-            dec cx     
-            call trataCase   
-            cmp cx, 0
-            jne buscaPalavraHorizontalOpostoAchouTrataCase
-        
-        jmp fimBuscaPalavraHorizontalOposto
-    fimBuscaPalavraHorizontalOposto:
-        ret
 
 ;-----------------------------------------------
 buscaPalavraVertical:
@@ -1289,113 +811,7 @@ lerPalavra:
         mov ah, 9; joga 9 para ah, preparando para imprimir mensagem
         int 21h; chama a interupcao 33 (21h)
     ret; retorna o fluxo para posicao de chamada
-
-;----------------------------------------------- Usado para validacoes das diagonais
-comparaArray:  ;a posicao do array deve estar em dx ;a posicao do cacaPalavra deve estar em bx
-	push bx ; salva a posicao do cacaPalavra
-	mov cx,0    
-    mov validacaoPocisaoDiagonalAux,1 ;o resultado da validacao e armazenado em validacaoPocisaoDiagonalAux temporariamente
-    mov ax,bx ;salva a pocisao do cacaPalavra para poder alterar bx
-	push dx ;salva a pocisao do array temporariamente
-	loopComparaArray:
-		;incrementa pocisao do vetor
-		add dx,cx
-        mov bx,dx
-		;seta a letra do array em dl
-		mov dl,[bx]
-		;seta a letra do cacaPalavra em dh
-		mov bx,ax
-		mov dh,[bx]
-        cmp dl,dl
-        je comparacaoArrayFalse 
-        inc cx
-        ;verifica se ja chegou ao fim do array de comparacao
-        cmp cx,19
-        je fimComparaArray
-		;compara se pocisaoAtualBuscaDiagonal > 1140
-		mov bx,ax
-		cmp bx,1140
-		jge comparacaoArrayFalse
-		
-    jmp loopComparaArray
-        
-		
-fimComparaArray:  ; o resultado da comparacao � retornado em validacaoPocisaoDiagonalAux
-pop bx ;restaura a pocisao do cacaPalavra
-mov dx,0 
-mov cx,0
-
-ret
-
-comparacaoArrayFalse:
-    mov validacaoPocisaoDiagonalAux,0
-    jmp fimComparaArray
-
-;-----------------------------------------------Comparacoes diagonal linha 0 ou ultima linha
-                                                ;O resultado e retornado em ax
-    ;---------------------Compara se esta na linha 0
-        comparaDiagonalLinhaMenor:
-    
-        ;cmp ax,comparacaoLinhaMenor 
-        ;jge retornaFalseComparacao
-        
-        ret
-    
-    ;---------------------Compara se esta na ultima linha    
-        
-        comparaDiagonalLinhaMaior:
-        
-            ;comp ax,comparacaoLinhaMaior  
-            ;jge retornaFalseComparacao
-        
-        ret
-    
-    
-    retornaFalseComparacao:
-        ;mov ax,0   
-        
-    ret 
-                                 
-;-----------------------------------------------Pula para proxima letra
-    vaiParaProximaLetra: 
-        mov acabouBuscaDiagonal,0
-    
-        cmp si,59
-        je resetaSi
-        jmp incrementaSi       
-        fimVaiParaProximaLetra:
-        ret                           
-    
-            incrementaSi:
-                inc si
-                jmp fimVaiParaProximaLetra ;fim                              
-            
-            resetaSi:
-                call pulaParaProximaLinha;
-                mov si,0          
-                jmp fimVaiParaProximaLetra ;fim
-    ;-------------------------             Pula para proxima linha, e valida se chegou ao final do caca palavra
-    pulaParaProximaLinha:
-       add di,60
-       lea dx, quebraLinha
-       mov ah, 9
-       int 21h
-       cmp di,1200
-       je chegouAoFinalCacaPalavra
-    fimPulaParaProximaLinha:   
-    ret
-    chegouAoFinalCacaPalavra:
-       mov acabouBuscaDiagonal,1
-       jmp fimPulaParaProximaLinha                
-;-----------------------------------------------
-trataPocisaoFinalDiagonal:
-    mov dx,0 
-    mov bx,60
-    div bx
-    mov comparaPalavraEncontrouFimDiagonal[0], dx
-    mov comparaPalavraEncontrouFimDiagonal[2], ax
-ret    
-
+           
 ;-----------------------------------------------
 InvertePalavraAtual:
    pusha
