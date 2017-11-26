@@ -149,7 +149,7 @@ buscaPalavraTodasDirecoes:
                     ;mov al, comparaPalavraEncontrouFim[3]
                     ;cmp al, 00
                     ;jne buscaPalavraTodasDirecoesAchou
-                    ;;mov al, comparaPalavraEncontrouFim[1]
+                    ;mov al, comparaPalavraEncontrouFim[1]
                     ;cmp al, 00
                     ;jne buscaPalavraTodasDirecoesAchou
             ;---Diagonal Inferior----------------------
@@ -158,13 +158,13 @@ buscaPalavraTodasDirecoes:
                     ;cmp ax, 00
                     ;jne buscaPalavraTodasDirecoesAchouDiagonal
                     ; falta coisas
-                    call buscaPalavraDiagonalSupDirParaInfEsq
-                    mov al, comparaPalavraEncontrouFim[3]
-                    cmp al, 00
-                    jne buscaPalavraTodasDirecoesAchou
-                    mov al, comparaPalavraEncontrouFim[1]
-                    cmp al, 00
-                    jne buscaPalavraTodasDirecoesAchou
+                    ;call buscaPalavraDiagonalSupDirParaInfEsq
+                    ;mov al, comparaPalavraEncontrouFim[3]
+                    ;cmp al, 00
+                    ;jne buscaPalavraTodasDirecoesAchou
+                    ;mov al, comparaPalavraEncontrouFim[1]
+                    ;cmp al, 00
+                    ;jne buscaPalavraTodasDirecoesAchou
     
     jmp buscaPalavraTodasDirecoesNaoAchou  
     
