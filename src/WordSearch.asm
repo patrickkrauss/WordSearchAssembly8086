@@ -166,7 +166,16 @@ buscaPalavraTodasDirecoes:
                     jne buscaPalavraTodasDirecoesAchou
                     mov al, comparaPalavraEncontrouFim[1]
                     cmp al, 00
-                    jne buscaPalavraTodasDirecoesAchou
+                    jne buscaPalavraTodasDirecoesAchou     
+                    
+                    ;buscaPalavraDiagonalSupEsqParaInfDir    
+                    call buscaPalavraDiagonalSupEsqParaInfDir
+                    mov al, comparaPalavraEncontrouFim[3]
+                    cmp al, 00
+                    jne buscaPalavraDiagonalSupEsqParaInfDir
+                    mov al, comparaPalavraEncontrouFim[1]
+                    cmp al, 00
+                    jne buscaPalavraTodasDirecoesAchou   
     
     jmp buscaPalavraTodasDirecoesNaoAchou  
     
@@ -445,12 +454,12 @@ buscaPalavraDiagonalInferiorDireita:
              mov pocisaoAtualBuscaDiagonal,ax
              loopBuscaPalavraDiagonalInferiorDireita:
                  
-                 ;------------Valida se pocisao é valida;  bx = Poc do cacaPalavra; dx = Array para comparar
+                 ;------------Valida se pocisao ï¿½ valida;  bx = Poc do cacaPalavra; dx = Array para comparar
                  ;lea bx,CACA_PALAVRAS
                  ;add bx,[pocisaoAtualBuscaDiagonal]
 				 ;lea dx,arrayDeComparacaoDiagonaDireita
                  ;call comparaArray
-                 ;cmp validacaoPocisaoDiagonalAux,0 ; se for 0 pocisao é invalida
+                 ;cmp validacaoPocisaoDiagonalAux,0 ; se for 0 pocisao ï¿½ invalida
                  ;je buscaPalavraDiagonalInferiorDireitaNaoAchou
                  
                  ;-------------------------------------------------------------aqui fazer tratamento de maiusculo/minusculo 
@@ -625,6 +634,127 @@ buscaPalavraDiagonalSupDirParaInfEsq:
         jmp fimBuscaPalavraDiagonalSupDirParaInfEsq
     buscaPalavraDiagonalSupDirParaInfEsqAchou:   
         ;grava a posiacao fim.    
+        pusha                                 
+        popa
+                                                           
+        mov bx, 0
+        buscaPalavraDiagonalSupDirParaInfEsqAchouTrataCase:
+            sub di, 59
+            dec cx     
+            call trataCase   
+            cmp cx, 0
+            jne buscaPalavraDiagonalSupDirParaInfEsqAchouTrataCase
+        
+        jmp fimBuscaPalavraDiagonalSupDirParaInfEsq
+    fimBuscaPalavraDiagonalSupDirParaInfEsq:
+        ret                                      
+
+
+buscaPalavraDiagonalSupEsqParaInfDir:
+    ;reseta registradores usados
+        mov cx, 0; indice da coluna da 'palavraAtual'
+        mov dx, 0; indice da coluna do 'CACA_PALAVRAS'
+        mov di, 0; indice da diagonal do 'CACA_PALAVRAS'    
+    
+    ;reseta variaveis de controle
+        mov comparaPalavraEncontrouInicio[0], 0h
+        mov comparaPalavraEncontrouInicio[1], 0h
+        mov comparaPalavraEncontrouInicio[2], 0h
+        mov comparaPalavraEncontrouInicio[3], 0h    
+
+
+    buscaPalavraDiagonalSupEsqParaInfDirComp:
+        mov si, cx
+        cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
+        je buscaPalavraDiagonalSupEsqParaInfDirAchou;move o fluxo para o rotulo que trata encontrar a palavra.
+        mov si, di                         
+        cmp CACA_PALAVRAS[di], "$";verifica se e o fim da tabela em que se esta procurando
+        je buscaPalavraDiagonalSupEsqParaInfDirNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        cmp CACA_PALAVRAS[di], 0;verifica se e o fim da tabela em que se esta procurando
+        je buscaPalavraDiagonalSupEsqParaInfDirNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
+        mov al, CACA_PALAVRAS[di]
+        mov si, cx
+        cmp al, palavraAtual[si];compara as letras nos indices atuais nas duas variaveis
+        je buscaPalavraDiagonalSupEsqParaInfDirCompCaracterIgual;move fluxo para  desencontro de letras (palavras nao sao iguais)
+        
+        cmp al, 'a'
+        js buscaPalavraDiagonalSupEsqParaInfDirCompUpperCaseFim
+        cmp al, 'z'  
+        jg buscaPalavraDiagonalSupEsqParaInfDirCompUpperCaseFim   
+        sub al, 20h
+        cmp al, palavraAtual[si]  
+        je buscaPalavraDiagonalSupEsqParaInfDirCompCaracterIgual     
+        buscaPalavraDiagonalSupEsqParaInfDirCompUpperCaseFim: 
+        
+        cmp al, 'A'
+        js buscaPalavraDiagonalSupEsqParaInfDirCompLowerCaseFim
+        cmp al, 'Z'  
+        jg buscaPalavraDiagonalSupEsqParaInfDirCompLowerCaseFim   
+        add al, 20h
+        cmp al, palavraAtual[si]  
+        je buscaPalavraDiagonalSupEsqParaInfDirCompCaracterIgual     
+        buscaPalavraDiagonalSupEsqParaInfDirCompLowerCaseFim:
+        
+        jmp buscaPalavraDiagonalSupEsqParaInfDirCompCaracterDif         
+        
+        buscaPalavraDiagonalSupEsqParaInfDirCompCaracterIgual:
+
+            inc cx;avanca os indices, para continuar comparacao
+            add di, 61;avanca os indices, para continuar comparacao            
+            pusha
+                mov ax, di
+                mov dx, 0
+                mov cx, 60
+                div cx
+                mov bx, dx 
+                sub di, 61
+                mov cx, 60 
+                mov dx, 0
+                mov ax, di
+                div cx
+                cmp dx, bx
+                je  buscaPalavraDiagonalSupEsqParaInfDirEstouro;trata nova linha;
+            popa        
+            jmp buscaPalavraDiagonalSupEsqParaInfDirComp;retorna para comparar proximos caracteres
+
+    buscaPalavraDiagonalSupEsqParaInfDirEstouro:
+        popa            
+        jmp buscaPalavraDiagonalSupEsqParaInfDirCompCaracterDif
+
+    buscaPalavraDiagonalSupEsqParaInfDirCompCaracterDif:
+        mov cx, 0; reseta indices
+        inc dx
+        mov di, dx              
+        ;grava o caracter de inicio como sendo a posicao atual
+        mov bx, dx        
+        pusha                                   
+            mov ax, di
+            mov dx, 0
+            mov cx, 60
+            div cx  
+            mov comparaPalavraEncontrouInicio[0], dh ;grava coluna
+            mov comparaPalavraEncontrouInicio[1], dl
+            mov dx, 0
+            mul cx
+            mov comparaPalavraEncontrouInicio[2], ah;grava linha
+            mov comparaPalavraEncontrouInicio[3], al
+        popa
+        jmp buscaPalavraDiagonalSupEsqParaInfDirComp
+
+
+    buscaPalavraDiagonalSupEsqParaInfDirNaoAchou:    
+        ;reseta variaveis de inicio e fim.
+        mov comparaPalavraEncontrouFim[0], 0h
+        mov comparaPalavraEncontrouFim[1], 0h    
+        mov comparaPalavraEncontrouFim[2], 0h    
+        mov comparaPalavraEncontrouFim[3], 0h    
+        mov comparaPalavraEncontrouInicio[0], 0h
+        mov comparaPalavraEncontrouInicio[1], 0h
+        mov comparaPalavraEncontrouInicio[2], 0h
+        mov comparaPalavraEncontrouInicio[3], 0h
+        jmp fimBuscaPalavraDiagonalSupEsqParaInfDir
+    buscaPalavraDiagonalSupEsqParaInfDirAchou:   
+        ;grava a posiacao fim.    
         pusha                                   
             mov ax, di
             mov dx, 0
@@ -639,15 +769,15 @@ buscaPalavraDiagonalSupDirParaInfEsq:
         popa
                                                            
         mov bx, 0
-        buscaPalavraDiagonalSupDirParaInfEsqAchouTrataCase:
-            sub di, 59
+        buscaPalavraDiagonalSupEsqParaInfDirAchouTrataCase:
+            sub di, 61
             dec cx     
             call trataCase   
             cmp cx, 0
-            jne buscaPalavraDiagonalSupDirParaInfEsqAchouTrataCase
+            jne buscaPalavraDiagonalSupEsqParaInfDirAchouTrataCase
         
-        jmp fimBuscaPalavraDiagonalSupDirParaInfEsq
-    fimBuscaPalavraDiagonalSupDirParaInfEsq:
+        jmp fimBuscaPalavraDiagonalSupEsqParaInfDir
+    fimBuscaPalavraDiagonalSupEsqParaInfDir:
         ret                                      
 
 
@@ -1190,7 +1320,7 @@ comparaArray:  ;a posicao do array deve estar em dx ;a posicao do cacaPalavra de
     jmp loopComparaArray
         
 		
-fimComparaArray:  ; o resultado da comparacao é retornado em validacaoPocisaoDiagonalAux
+fimComparaArray:  ; o resultado da comparacao ï¿½ retornado em validacaoPocisaoDiagonalAux
 pop bx ;restaura a pocisao do cacaPalavra
 mov dx,0 
 mov cx,0
