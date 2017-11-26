@@ -443,13 +443,6 @@ buscaPalavraDiagonalInferiorDireita:
              mov pocisaoAtualBuscaDiagonal,ax
              loopBuscaPalavraDiagonalInferiorDireita:
                  
-                 ;printa letra sendo buscada diagonal
-                 lea bx,CACA_PALAVRAS
-                 add bx,[pocisaoAtualBuscaDiagonal]
-                 mov dx, [bx]
-                 mov ah, 2
-                 int 21h 
-                 
                  ;------------Valida se pocisao é valida;  bx = Poc do cacaPalavra; dx = Array para comparar
                  ;lea bx,CACA_PALAVRAS
                  ;add bx,[pocisaoAtualBuscaDiagonal]
@@ -458,7 +451,10 @@ buscaPalavraDiagonalInferiorDireita:
                  ;cmp validacaoPocisaoDiagonalAux,0 ; se for 0 pocisao é invalida
                  ;je buscaPalavraDiagonalInferiorDireitaNaoAchou
                  
-                 ;-------------------------------------------------------------aqui fazer tratamento de maiusculo/minusculo
+                 ;-------------------------------------------------------------aqui fazer tratamento de maiusculo/minusculo 
+                 
+                 
+                 ;---------------
                  ;------------Carrega em dl o caractere do cacaPalavras
                  lea ax,CACA_PALAVRAS
                  add ax,pocisaoAtualBuscaDiagonal
@@ -1258,7 +1254,7 @@ comparacaoArrayFalse:
     ret
     chegouAoFinalCacaPalavra:
        mov acabouBuscaDiagonal,1
-       jmp fimPulaParaProximaLinha
+       jmp fimPulaParaProximaLinha                
 ;-----------------------------------------------
 trataPocisaoFinalDiagonal:
     mov dx,0 
@@ -1266,6 +1262,30 @@ trataPocisaoFinalDiagonal:
     div bx
     mov comparaPalavraEncontrouFimDiagonal[0], dx
     mov comparaPalavraEncontrouFimDiagonal[2], ax
+ret    
+
+;-----------------------------------------------
+InvertePalavraAtual:
+   pusha
+        mov bx, 0                    
+        dec bx
+        InvertePalavraAtualLacoUm:   
+            inc bx
+            cmp '$', palavraAtual[bx]       
+            jne InvertePalavraAtualLacoUm 
+        dec bx 
+        InvertePalavraAtualChar:
+        mov cx, bx
+        mov dx, cx
+        sub dx, bx                
+        mov di, palavraAtual[dx]
+        mov ax, palavraAtual[bx]
+        mov palavraAtual[dx], ax
+        mov palavraAtual[bx], di
+        dec bx
+        cmp bx, di
+        jg InvertePalavraAtualChar
+   popa
 ret    
 
 ;-----------------------------------------------
