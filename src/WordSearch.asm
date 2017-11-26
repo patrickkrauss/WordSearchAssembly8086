@@ -66,9 +66,7 @@ start:
 CicloPricipal:    
     call printaCacaPalavra
     call lerPalavra
-    call buscaPalavraTodasDirecoes      
-    call InvertePalavraAtual            
-    call buscaPalavraTodasDirecoes      
+    call buscaPalavraTodasDirecoes       
     jmp CicloPricipal
 
 
@@ -106,44 +104,71 @@ printaCacaPalavra:
 ;-----------------------------------------------
 buscaPalavraTodasDirecoes:
     
-    ;-------------------Busca Horizontal---------------------
-            call buscaPalavraHorizontal
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
+    call buscaPalavraHorizontal
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+
+    call buscaPalavraVertical
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+
+    call buscaPalavraDiagonalSupDirParaInfEsq
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou     
     
-    ;--------------Busca Vertical---------------------
-            call buscaPalavraVertical
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
+    call buscaPalavraDiagonalSupEsqParaInfDir
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraDiagonalSupEsqParaInfDir
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou   
+
+    call InvertePalavraAtual 
     
-    ;-------------------Busca Diagonal---------------------
-            ;---Diagonal Superior----------------------
-                    
-                   
-            ;---Diagonal Inferior----------------------
-                    call buscaPalavraDiagonalSupDirParaInfEsq
-                    mov al, comparaPalavraEncontrouFim[3]
-                    cmp al, 00
-                    jne buscaPalavraTodasDirecoesAchou
-                    mov al, comparaPalavraEncontrouFim[1]
-                    cmp al, 00
-                    jne buscaPalavraTodasDirecoesAchou     
-                    
-                    call buscaPalavraDiagonalSupEsqParaInfDir
-                    mov al, comparaPalavraEncontrouFim[3]
-                    cmp al, 00
-                    jne buscaPalavraDiagonalSupEsqParaInfDir
-                    mov al, comparaPalavraEncontrouFim[1]
-                    cmp al, 00
-                    jne buscaPalavraTodasDirecoesAchou   
+    call buscaPalavraHorizontal
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+
+    call buscaPalavraVertical
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+
+    call buscaPalavraDiagonalSupDirParaInfEsq
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou     
+    
+    call buscaPalavraDiagonalSupEsqParaInfDir
+    mov al, comparaPalavraEncontrouFim[3]
+    cmp al, 00
+    jne buscaPalavraDiagonalSupEsqParaInfDir
+    mov al, comparaPalavraEncontrouFim[1]
+    cmp al, 00
+    jne buscaPalavraTodasDirecoesAchou   
     
     jmp buscaPalavraTodasDirecoesNaoAchou  
 
@@ -155,7 +180,7 @@ buscaPalavraTodasDirecoes:
         mov ah, 9
         int 21h
         jmp buscaPalavraTodasDirecoesFim  
-    buscaPalavraTodasDirecoesFim:
+    buscaPalavraTodasDirecoesFim:    
         ret    
 
 
