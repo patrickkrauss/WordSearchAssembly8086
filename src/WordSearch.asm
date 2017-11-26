@@ -27,7 +27,7 @@ data segment
     quebraLinha DB 13,10,"$"
     linhaEmBranco DB 13,10,13,10,"$"
     
-    palavraAtual DB "                    $";
+    palavraAtual DB "asdf1234567890asdf--$";
     comparaPalavraEncontrouInicio DB 00h,0Ch,00h,00h ;00 - Coluna 00 - linha;
     comparaPalavraEncontrouFim    DB 00h,00h,00h,00h ;00 - Coluna 00 - linha;
     
@@ -63,10 +63,12 @@ start:
     mov di,0             ;di vai de 0 a 1140. exemplo: 0,60,120,180,240,300,360,...
     ;ADD YOUR CODE HERE
 
-CicloPricipal:        
+CicloPricipal:    
     call printaCacaPalavra
     call lerPalavra
-    call buscaPalavraTodasDirecoes
+    call buscaPalavraTodasDirecoes      
+    call InvertePalavraAtual            
+    call buscaPalavraTodasDirecoes      
     jmp CicloPricipal
 
 
@@ -112,13 +114,13 @@ buscaPalavraTodasDirecoes:
             mov al, comparaPalavraEncontrouFim[1]
             cmp al, 00
             jne buscaPalavraTodasDirecoesAchou
-            call buscaPalavraHorizontalOposto
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
+            ;call buscaPalavraHorizontalOposto
+            ;mov al, comparaPalavraEncontrouFim[3]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;mov al, comparaPalavraEncontrouFim[1]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
     
     ;--------------Busca Vertical---------------------
             call buscaPalavraVertical
@@ -128,13 +130,13 @@ buscaPalavraTodasDirecoes:
             mov al, comparaPalavraEncontrouFim[1]
             cmp al, 00
             jne buscaPalavraTodasDirecoesAchou
-            call buscaPalavraVerticalOposto
-            mov al, comparaPalavraEncontrouFim[3]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
-            mov al, comparaPalavraEncontrouFim[1]
-            cmp al, 00
-            jne buscaPalavraTodasDirecoesAchou
+            ;call buscaPalavraVerticalOposto
+            ;mov al, comparaPalavraEncontrouFim[3]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
+            ;mov al, comparaPalavraEncontrouFim[1]
+            ;cmp al, 00
+            ;jne buscaPalavraTodasDirecoesAchou
     
     ;-------------------Busca Diagonal---------------------
             ;---Diagonal Superior----------------------
@@ -158,13 +160,13 @@ buscaPalavraTodasDirecoes:
                     ;cmp ax, 00
                     ;jne buscaPalavraTodasDirecoesAchouDiagonal
                     ; falta coisas
-                    ;call buscaPalavraDiagonalSupDirParaInfEsq
-                    ;mov al, comparaPalavraEncontrouFim[3]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
-                    ;mov al, comparaPalavraEncontrouFim[1]
-                    ;cmp al, 00
-                    ;jne buscaPalavraTodasDirecoesAchou
+                    call buscaPalavraDiagonalSupDirParaInfEsq
+                    mov al, comparaPalavraEncontrouFim[3]
+                    cmp al, 00
+                    jne buscaPalavraTodasDirecoesAchou
+                    mov al, comparaPalavraEncontrouFim[1]
+                    cmp al, 00
+                    jne buscaPalavraTodasDirecoesAchou
     
     jmp buscaPalavraTodasDirecoesNaoAchou  
     
@@ -1271,19 +1273,26 @@ InvertePalavraAtual:
         dec bx
         InvertePalavraAtualLacoUm:   
             inc bx
-            cmp '$', palavraAtual[bx]       
+            mov al, palavraAtual[bx]
+            cmp al, '$'
             jne InvertePalavraAtualLacoUm 
-        dec bx 
-        InvertePalavraAtualChar:
+        dec bx                  
         mov cx, bx
+        InvertePalavraAtualChar:
         mov dx, cx
-        sub dx, bx                
-        mov di, palavraAtual[dx]
-        mov ax, palavraAtual[bx]
-        mov palavraAtual[dx], ax
-        mov palavraAtual[bx], di
+        sub dx, bx      
+        push bx                     
+            mov bx, dx
+            mov al, palavraAtual[bx]
+        pop bx
+        mov ah, palavraAtual[bx]  
+        push bx
+            mov bx, dx
+            mov palavraAtual[bx], ah
+        pop bx
+        mov palavraAtual[bx], al
         dec bx
-        cmp bx, di
+        cmp bx, dx
         jg InvertePalavraAtualChar
    popa
 ret    
