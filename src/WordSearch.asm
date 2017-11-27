@@ -27,7 +27,7 @@ data segment
     quebraLinha DB 13,10,"$"
     linhaEmBranco DB 13,10,13,10,"$"
     
-    palavraAtual DB "asdf1234567890asdf--$";
+    palavraAtual DB "                    $";
     comparaPalavraEncontrouInicio DB 00h,0Ch,00h,00h ;00 - Coluna 00 - linha;
     comparaPalavraEncontrouFim    DB 00h,00h,00h,00h ;00 - Coluna 00 - linha;
     
@@ -37,7 +37,8 @@ data segment
     dsColuna DB "coluna $"
     dsLinha DB " linha $"
     dsInicio DB "Inicio em $"
-    dsFim DB "Fim em $" 
+    dsFim DB "Fim em $"
+    caractereColoridoAuxiliar DB " $" 
     
 	validacaoPocisaoDiagonalAux dw ? ;Usado para validar se a poc da diagonal e valida
     acabouBuscaDiagonal dw 0 ;Usado para validar se a palavra do usuario foi encontrada na diagonal
@@ -73,34 +74,62 @@ CicloPricipal:
                                                    
 ;-----------------------------------------------  
 printaCacaPalavra:
-    mov bx, 0                    
-    mov si, 0
+    mov cx, 0                    
+    mov si, 0             
+    mov bl,5  ;color attribute
+    mov al,0  ;avoding extra characters
     printaCacaPalavraLoop:
+        mov bx,cx
         mov al,CACA_PALAVRAS[bx + si]
-        cmp al, '$'
-        je printaCacaPalavraFim
+        
         cmp al, 0
-        je printaCacaPalavraFim
-        MOV DL, Al
-        MOV AH, 2
-        INT 21H
-        inc bx
-        cmp bx,60
+        je printaCacaPalavraFim 
+        push cx
+        call trataPrintCacaPalavra
+        pop cx
+                   
+        inc cx
+        cmp cx,60  ;se nao e 60 continua a printa
         jne printaCacaPalavraLoop
-            mov bx, 0
+            mov cx, 0
             add si, 60          
             
             lea dx, quebraLinha
             mov ah, 9
-            int 21h
-            jmp printaCacaPalavraLoop
+            int 21h 
+            mov bl,5  ;color attribute
+            mov al,0  ;avoding extra characters
+        jmp printaCacaPalavraLoop
         
         
         jmp printaCacaPalavra
     
     printaCacaPalavraFim:
-        ret
-
+        ret 
+        
+    trataPrintCacaPalavra: ;printa colorido ou normal
+        cmp al,90
+        jg printaLetraColoridaEMinuscula     
+    
+        printaLetraNormal:
+            mov caractereColoridoAuxiliar,al
+            lea dx,caractereColoridoAuxiliar
+            mov bl,7  ;color attribute
+            mov ah, 9 
+            mov al,0  ;avoding extra characters
+            int 10h   ;printing colors
+            int 21h 
+            ret 
+        printaLetraColoridaEMinuscula:
+            mov cx,0143h
+            mov caractereColoridoAuxiliar,al
+            lea dx,caractereColoridoAuxiliar
+            mov bl,5  ;color attribute
+            mov al,0  ;avoding extra characters
+            mov ah, 9 
+            int 10h   ;printing colors
+            int 21h 
+            ret 
 ;-----------------------------------------------
 buscaPalavraTodasDirecoes:
     
