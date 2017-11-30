@@ -28,11 +28,8 @@ data segment
     linhaEmBranco DB 13,10,13,10,"$"
     
     palavraAtual DB "                    $";
-    comparaPalavraEncontrouInicio DB 00h,0Ch,00h,00h ;00 - Coluna 00 - linha;
+    comparaPalavraEncontrouInicio DB 00h,00h,00h,00h ;00 - Coluna 00 - linha;
     comparaPalavraEncontrouFim    DB 00h,00h,00h,00h ;00 - Coluna 00 - linha;
-    
-    comparaPalavraEncontrouInicioDiagonal DW 0h,0h ;0 - Coluna 0 - linha;
-    comparaPalavraEncontrouFimDiagonal DW 0h,0h ;0 - Coluna 0 - linha;
     
     dsColuna DB "coluna $"
     dsLinha DB " linha $"
@@ -40,14 +37,6 @@ data segment
     dsFim DB "Fim em $"
     caractereColoridoAuxiliar DB " $" 
     
-	validacaoPocisaoDiagonalAux dw ? ;Usado para validar se a poc da diagonal e valida
-    acabouBuscaDiagonal dw 0 ;Usado para validar se a palavra do usuario foi encontrada na diagonal
-    pocisaoAtualBuscaDiagonal dw ?
-    posicaoDaPalavraAtual dw ?
-    arrayDeComparacaoDiagonaDireita  dw 59,119,179,239,299,359,419,479,539,599,659,719,779,839,899,959,1019,1079,1139,1199 ;usado para validar diagonal que avanca para esquerda
-	arrayDeComparacaoDiagonaEsquerda dw  0, 60,120,180,240,300,360,420,480,540,600,660,720,780,840,900, 960,1020,1080,1140 ;usado para validar diagonal que avanca para direita
-	comparacaoLinhaMaior dw 1140 ;usado para valida se a diagonal esta na ultima linha
-	comparacaoLinhaMenor dw 59 ;usado para valida se a diagonal esta na linha 0
 ends
 
 stack segment
@@ -346,8 +335,6 @@ buscaPalavraDiagonalSupDirParaInfEsq:
         cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
         je buscaPalavraDiagonalSupDirParaInfEsqAchou;move o fluxo para o rotulo que trata encontrar a palavra.
         mov si, di                         
-        cmp CACA_PALAVRAS[di], "$";verifica se e o fim da tabela em que se esta procurando
-        je buscaPalavraDiagonalSupDirParaInfEsqNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         cmp CACA_PALAVRAS[di], 0;verifica se e o fim da tabela em que se esta procurando
         je buscaPalavraDiagonalSupDirParaInfEsqNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         mov al, CACA_PALAVRAS[di]
@@ -449,6 +436,7 @@ buscaPalavraDiagonalSupDirParaInfEsq:
         ret                                      
 
 
+;----------------------------------------------------
 buscaPalavraDiagonalSupEsqParaInfDir:
     ;reseta registradores usados
         mov cx, 0; indice da coluna da 'palavraAtual'
@@ -467,8 +455,6 @@ buscaPalavraDiagonalSupEsqParaInfDir:
         cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
         je buscaPalavraDiagonalSupEsqParaInfDirAchou;move o fluxo para o rotulo que trata encontrar a palavra.
         mov si, di                         
-        cmp CACA_PALAVRAS[di], "$";verifica se e o fim da tabela em que se esta procurando
-        je buscaPalavraDiagonalSupEsqParaInfDirNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         cmp CACA_PALAVRAS[di], 0;verifica se e o fim da tabela em que se esta procurando
         je buscaPalavraDiagonalSupEsqParaInfDirNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         mov al, CACA_PALAVRAS[di]
@@ -600,8 +586,6 @@ buscaPalavraVertical:
         cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
         je buscaPalavraVerticalAchou;move o fluxo para o rotulo que trata encontrar a palavra.
         mov si, di                           
-        cmp CACA_PALAVRAS[bx + si], "$";verifica se e o fim da tabela em que se esta procurando
-        je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         cmp CACA_PALAVRAS[bx + si], 0;verifica se e o fim da tabela em que se esta procurando
         je buscaPalavraVerticalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra                                                            
         mov al, CACA_PALAVRAS[bx + si]
@@ -711,8 +695,6 @@ buscaPalavraHorizontal:
         cmp palavraAtual[si], "$";verifica se e o fim da palavra pela qual se esta procurando.
         je buscaPalavraHorizontalAchou;move o fluxo para o rotulo que trata encontrar a palavra.
         mov si, di                         
-        cmp CACA_PALAVRAS[bx + si], "$";verifica se e o fim da tabela em que se esta procurando
-        je buscaPalavraHorizontalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         cmp CACA_PALAVRAS[bx + si], 0;verifica se e o fim da tabela em que se esta procurando
         je buscaPalavraHorizontalNaoAchou;move o fluxo para o rotulo que trata nao encontrar a palavra
         mov al, CACA_PALAVRAS[bx + si]
